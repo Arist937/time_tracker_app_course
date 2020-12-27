@@ -1,7 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/sign_in_page.dart';
 
-void main() {
+// need to make function async to use 'await'
+Future<void> main() async {
+  // required for initializing plugins
+  WidgetsFlutterBinding.ensureInitialized();
+  // program waits for firebase to finish initializing
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
