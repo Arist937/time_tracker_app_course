@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:time_tracker_flutter_course/app/sign_in/email_sign_in_page_form.dart';
+import 'package:time_tracker_flutter_course/app/sign_in/reset_password_form.dart';
 
-class EmailSignInPage extends StatelessWidget {
+class ResetPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Email Sign In"),
+        title: Text("Reset Password"),
         elevation: 2.0,
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Card(
-            child: EmailSignInForm(),
+            child: ResetPasswordForm(),
           ),
         ),
       ),

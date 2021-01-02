@@ -1,14 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:time_tracker_flutter_course/app/sign_in/reset_password_page.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/validators.dart';
 import 'package:time_tracker_flutter_course/common_widgets/form_submit_button.dart';
+import 'package:time_tracker_flutter_course/common_widgets/show_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
 enum EmailSignInFormType { signIn, register }
 
 class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidator {
-  EmailSignInForm({Key key, @required this.auth}) : super(key: key);
-  final AuthBase auth;
-
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
 }
@@ -42,15 +43,22 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     });
 
     try {
+      final auth = Provider.of<AuthBase>(context, listen: false);
+
       if (_formType == EmailSignInFormType.signIn) {
-        await widget.auth.signInWithEmail(_email, _password);
+        await auth.signInWithEmail(_email, _password);
       } else {
-        await widget.auth.createEmailAccount(_email, _password);
+        await auth.createEmailAccount(_email, _password);
       }
 
       Navigator.of(context).pop();
     } catch (e) {
-      print(e.toString());
+      showAlertDialogue(
+        context,
+        title: "Sign in Error",
+        content: e.toString(),
+        defaultActionText: "OK",
+      );
     } finally {
       setState(() {
         _isLoading = false;
@@ -70,7 +78,14 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     _passwordController.clear();
   }
 
-  List<Widget> _buildChildren() {
+  void _forgotPassword(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+          fullscreenDialog: true, builder: (context) => ResetPasswordPage()),
+    );
+  }
+
+  List<Widget> _buildChildren(BuildContext context) {
     final primaryText = _formType == EmailSignInFormType.signIn
         ? "Sign In"
         : "Create an account";
@@ -96,6 +111,10 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       FlatButton(
         onPressed: !_isLoading ? _toggleForm : null,
         child: Text(secondaryText),
+      ),
+      FlatButton(
+        onPressed: () => _forgotPassword(context),
+        child: Text("Forgot your password? Tap here to reset"),
       ),
     ];
   }
@@ -145,7 +164,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
-        children: _buildChildren(),
+        children: _buildChildren(context),
       ),
     );
   }
