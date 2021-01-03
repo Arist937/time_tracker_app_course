@@ -78,7 +78,7 @@ class Auth implements AuthBase {
         );
       case FacebookLoginStatus.error:
         throw FirebaseAuthException(
-          code: "ERROR_MISSING_GOOGlE_ID_TOKEN",
+          code: "ERROR_MISSING_FACEBOOK_ID_TOKEN",
           message: response.error.developerMessage,
         );
       default:

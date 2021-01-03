@@ -1,9 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/email_sign_in_page.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/sign_in_button.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/social_sign_in_button.dart';
-import 'package:time_tracker_flutter_course/common_widgets/loading_screen.dart';
+import 'package:time_tracker_flutter_course/common_widgets/show_exception_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
 class SignInPage extends StatefulWidget {
@@ -14,46 +15,62 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   bool _isLoading = false;
 
+  void _showSignInError(BuildContext context, Exception exception) {
+    if (exception is FirebaseAuthException &&
+        exception.code == 'ERROR_ABORTED_BY_USER') {
+      return;
+    } else {
+      showExceptionAlertDialog(
+        context,
+        title: "Sign in Failed",
+        exception: exception,
+      );
+    }
+  }
+
   Future<void> _signInAnonymously(BuildContext context) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    Navigator.of(context).push(MaterialPageRoute(
-      fullscreenDialog: false,
-      builder: (context) => LoadingPage(),
-    ));
-
     try {
+      setState(() => _isLoading = true);
+
       final auth = Provider.of<AuthBase>(context, listen: false);
       final userCredential = await auth.signInAnonymously();
       print(userCredential.uid);
     } catch (e) {
-      print(e.toString());
+      _showSignInError(context, e);
     } finally {
       setState(() {
         _isLoading = false;
       });
-
-      Navigator.of(context).pop();
     }
   }
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
+      setState(() => _isLoading = true);
+
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.signInWithGoogle();
     } catch (e) {
-      print(e.toString());
+      _showSignInError(context, e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
+      setState(() => _isLoading = true);
+
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.signInWithFacebook();
     } catch (e) {
-      print(e.toString());
+      _showSignInError(context, e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -85,14 +102,7 @@ class _SignInPageState extends State<SignInPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            "Sign In",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 32.0,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          SizedBox(height: 50, child: _buildHeader()),
           SizedBox(height: 48),
           SocialSignInButton(
             text: "Sign in with Google",
@@ -135,5 +145,22 @@ class _SignInPageState extends State<SignInPage> {
         ],
       ),
     );
+  }
+
+  Widget _buildHeader() {
+    if (_isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return Text(
+        "Sign In",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 32.0,
+          fontWeight: FontWeight.w600,
+        ),
+      );
+    }
   }
 }
