@@ -10,12 +10,14 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 
 enum EmailSignInFormType { signIn, register }
 
-class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidator {
+class EmailSignInFormStateful extends StatefulWidget
+    with EmailAndPasswordValidator {
   @override
-  _EmailSignInFormState createState() => _EmailSignInFormState();
+  _EmailSignInFormStatefulState createState() =>
+      _EmailSignInFormStatefulState();
 }
 
-class _EmailSignInFormState extends State<EmailSignInForm> {
+class _EmailSignInFormStatefulState extends State<EmailSignInFormStateful> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -134,8 +136,9 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       controller: _passwordController,
       decoration: InputDecoration(
         labelText: "Password",
-        errorText:
-            validPassword || !_submitted ? null : widget.passwordErrorText,
+        errorText: validPassword || !_submitted
+            ? null
+            : widget.invalidPasswordErrorText,
         enabled: !_isLoading,
       ),
       focusNode: _passwordFocusNode,
@@ -155,7 +158,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       decoration: InputDecoration(
         labelText: "Email",
         hintText: "example@email.com",
-        errorText: validEmail || !_submitted ? null : widget.emailErrorText,
+        errorText:
+            validEmail || !_submitted ? null : widget.invalidEmailErrorText,
         enabled: !_isLoading,
       ),
       focusNode: _emailFocusNode,

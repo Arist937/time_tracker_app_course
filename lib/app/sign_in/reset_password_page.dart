@@ -13,7 +13,7 @@ class ResetPasswordPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Card(
-            child: ResetPasswordForm(),
+            child: ResetPasswordForm.create(context),
           ),
         ),
       ),
