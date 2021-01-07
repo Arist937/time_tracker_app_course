@@ -160,18 +160,27 @@ class _EditJobPageState extends State<EditJobPage> {
       ),
       SizedBox(height: 8),
       TextFormField(
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(labelText: 'Rate Per Hour'),
-        enabled: _isLoading ? false : true,
-        focusNode: _rateFocusNode,
-        initialValue: widget.job != null ? '${widget.model.ratePerHour}' : null,
-        keyboardType: TextInputType.numberWithOptions(
-          signed: false,
-          decimal: false,
-        ),
-        onSaved: (value) => widget.model.updateRatePerHour(int.tryParse(value)),
-        validator: (value) => value.isNotEmpty ? null : "Rate cannot be empty",
-      )
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          decoration: InputDecoration(labelText: 'Rate Per Hour'),
+          enabled: _isLoading ? false : true,
+          focusNode: _rateFocusNode,
+          initialValue:
+              widget.job != null ? '${widget.model.ratePerHour}' : null,
+          keyboardType: TextInputType.numberWithOptions(
+            signed: false,
+            decimal: false,
+          ),
+          onSaved: (value) =>
+              widget.model.updateRatePerHour(int.tryParse(value)),
+          validator: (value) {
+            if (value.isEmpty) {
+              return "Rate cannot be empty";
+            } else if (int.tryParse(value) == null) {
+              return "Rate must be an integer";
+            } else {
+              return null;
+            }
+          })
     ];
   }
 }

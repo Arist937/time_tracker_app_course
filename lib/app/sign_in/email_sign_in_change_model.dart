@@ -26,7 +26,8 @@ class EmailSignInChangeModel with EmailAndPasswordValidator, ChangeNotifier {
 
     try {
       if (this.formType == EmailSignInFormType.signIn) {
-        await auth.signInWithEmail(this.email, this.password);
+        final user = await auth.signInWithEmail(this.email, this.password);
+        print(user.uid);
       } else {
         await auth.createEmailAccount(this.email, this.password);
       }
