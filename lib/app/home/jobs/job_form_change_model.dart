@@ -21,7 +21,7 @@ class JobFormChangeModel with ChangeNotifier {
 
   Future<void> submit() async {
     try {
-      final jobs = await database.streamJobs().first;
+      final jobs = await database.jobsStream().first;
       final allNames = jobs.map((job) => job.name).toList();
       if (documentId != null && jobName != null) {
         allNames.remove(jobName);
@@ -42,9 +42,15 @@ class JobFormChangeModel with ChangeNotifier {
     }
   }
 
-  void updateJobName(String jobName) => updateWith(jobName: jobName);
-  void updateRatePerHour(int ratePerHour) =>
-      updateWith(ratePerHour: ratePerHour);
+  void updateJobName(String jobName) {
+    updateWith(jobName: jobName);
+    print(this.jobName);
+  }
+
+  void updateRatePerHour(int ratePerHour) {
+    updateWith(ratePerHour: ratePerHour);
+    print(this.ratePerHour);
+  }
 
   void updateWith({String jobName, int ratePerHour, bool isLoading}) {
     this.jobName = jobName ?? this.jobName;

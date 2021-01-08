@@ -27,7 +27,7 @@ class ListItemsBuilder<T> extends StatelessWidget {
       );
     }
 
-    return CircularProgressIndicator();
+    return Center(child: CircularProgressIndicator());
   }
 
   Widget _buildList(List<T> items) {
